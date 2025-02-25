@@ -50,12 +50,4 @@ class Image {
 };
 }  // namespace My
 
-// ====================================================================================
-
-namespace My {
-template <typename T, typename>
-T& Image::At(size_t x, size_t y) {
-  assert(T::N == channel);
-  return reinterpret_cast<T&>(At(x, y, 0));
-}
-}  // namespace My
+#include "detail/Image.inl"
