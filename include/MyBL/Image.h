@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <MyGM/point.h>
 #include <MyGM/rgba.h>
 
 #include <MyDp/Basic/Read.h>
@@ -39,7 +40,7 @@ class Image {
   void SetAll(const T& color);
 
   // png, bmp, tga, jpg, hdr
-  bool Save(const std::string& path);
+  bool Save(const std::string& path) const;
   void Clear();
 
   bool IsValid() const noexcept;
@@ -53,7 +54,8 @@ class Image {
                                         std::is_same_v<T, rgbaf>>>
   T& At(size_t x, size_t y);
 
-  const rgbaf Sample(float u, float v) const;
+  const rgbaf SampleNearest(const pointf2& uv) const;
+  const rgbaf SampleLinear(const pointf2& uv) const;
 };
 }  // namespace My
 
