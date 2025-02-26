@@ -6,3 +6,4 @@ My Basic Library
 
 - [Image](include/MyBL/Image.h)
 - [Pool](include/MyBL/Pool.h)
+- [RsrcMngr](RsrcMngr.h) 
