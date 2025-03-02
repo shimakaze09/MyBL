@@ -45,15 +45,8 @@ void Pool<T>::Reserve(size_t n) {
 }
 
 template <typename T>
-void Pool<T>::Clear() {
-  std::unordered_set<T*> freeAdressesSet(freeAdresses.begin(),
-                                         freeAdresses.end());
+void Pool<T>::FastClear() {
   for (auto block : blocks) {
-    for (size_t i = 0; i < BLOCK_SIZE; i++) {
-      T* adress = block + i;
-      if (freeAdressesSet.find(adress) == freeAdressesSet.end())
-        adress->~T();
-    }
 #ifdef WIN32
     _aligned_free(block);
 #else
@@ -62,6 +55,30 @@ void Pool<T>::Clear() {
   }
   blocks.clear();
   freeAdresses.clear();
+}
+
+template <typename T>
+void Pool<T>::Clear() {
+  if constexpr (std::is_trivially_destructible_v<T>)
+    FastClear();
+  else {
+    std::unordered_set<T*> freeAdressesSet(freeAdresses.begin(),
+                                           freeAdresses.end());
+    for (auto block : blocks) {
+      for (size_t i = 0; i < BLOCK_SIZE; i++) {
+        T* adress = block + i;
+        if (freeAdressesSet.find(adress) == freeAdressesSet.end())
+          adress->~T();
+      }
+#ifdef WIN32
+      _aligned_free(block);
+#else
+      free(block);
+#endif  // WIN32
+    }
+    blocks.clear();
+    freeAdresses.clear();
+  }
 }
 
 template <typename T>

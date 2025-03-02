@@ -689,3 +689,7 @@ FodyWeavers.xsd
 
 # Dependencies
 _deps/
+
+# Image files
+**/*.png
+**/*.jpg
